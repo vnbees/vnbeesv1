@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-	return "Hello Word";
-    // return view('welcome');
-});
+// Route::get('/', function () {
+// 	return "Hello Word";
+//     // return view('welcome');
+// });
+AdvancedRoute::controller('/', 'requestController');

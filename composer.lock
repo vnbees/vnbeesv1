@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f2120fa77d42a42b4210cdbe1c114e2",
+    "content-hash": "4332c0052ad164a440eeddfdee1e98e3",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -680,6 +680,55 @@
                 "storage"
             ],
             "time": "2017-08-06T17:41:04+00:00"
+        },
+        {
+            "name": "lesichkovm/laravel-advanced-route",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lesichkovm/laravel-advanced-route.git",
+                "reference": "472f6cab15937358fa87ac43a807a084067d00c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lesichkovm/laravel-advanced-route/zipball/472f6cab15937358fa87ac43a807a084067d00c8",
+                "reference": "472f6cab15937358fa87ac43a807a084067d00c8",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "5.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/AdvancedRoute.php"
+                ]
+            },
+            "license": [
+                "commercial"
+            ],
+            "authors": [
+                {
+                    "name": "Milan Lesichkov",
+                    "email": "lesichkovm@gmail.com",
+                    "homepage": "http://lesichkov.co.uk",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Advanced route class for Laravel - restoring implicit controllers to the framework.",
+            "homepage": "http://github.com/lesichkovm/laravel-advanced-route",
+            "keywords": [
+                "advanced",
+                "laravel",
+                "lesichkov",
+                "php",
+                "route"
+            ],
+            "support": {
+                "source": "https://github.com/lesichkovm/laravel-advanced-route/tree/v.1.0.2",
+                "issues": "https://github.com/lesichkovm/laravel-advanced-route/issues"
+            },
+            "time": "2017-09-10T07:33:03+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3828,7 +3877,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "lesichkovm/laravel-advanced-route": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
