@@ -16,3 +16,4 @@
 //     // return view('welcome');
 // });
 AdvancedRoute::controller('/', 'requestController');
+AdvancedRoute::controller('/report', 'reportController');

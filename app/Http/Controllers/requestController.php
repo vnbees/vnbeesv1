@@ -13,8 +13,7 @@ class requestController extends BaseController
 {
 	public function getIndex(){
 		date_default_timezone_set("Asia/Ho_Chi_Minh");
-		echo json_encode(date('m/d/Y H:i:s',Tracking::find(2)->created_at->timestamp));
-
+		echo json_encode(date('m/d/Y H:i:s',Tracking::find(1)->created_at->timestamp));
 	}
 
     public function getTracking(Request $request){
