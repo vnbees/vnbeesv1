@@ -11,7 +11,13 @@ use Illuminate\Http\Request;
 
 class requestController extends BaseController
 {
-    public function getIndex(Request $request){
+	public function getIndex(){
+		// date_default_timezone_set("Asia/Ho_Chi_Minh");
+		echo json_encode(date('m/d/Y H:i:s',Tracking::find(2)->created_at->timestamp));
+
+	}
+
+    public function getTracking(Request $request){
     	$tracking = new Tracking;
         $tracking->url = $request->input('url');
         $tracking->userId = $request->input('token');
