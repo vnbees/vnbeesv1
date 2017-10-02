@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 class reportController extends BaseController
 {
 	public function getIndex(){
-        return Tracking::all()->groupBy(function($date) {
+        return Tracking::all()->sortByDesc('created_at')->groupBy(function($date) {
                 return \Carbon\Carbon::parse($date->created_at)->format('d-M-y');
-            })->sortByDesc('created_at')->toJson();
+            })->toJson();
 	}
 }
