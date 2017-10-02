@@ -46,7 +46,7 @@ class requestController extends BaseController
 
     public function getGenerateModal()
     {
-        $response = {};
+        $response = [];
         $response->body = '<!-- Modal content --> <div class="modal-content"> <div class="vnbees-modal-header"> <span class="vnbees-modal-close">&times;</span> <h4 style="_padding: 2px 16px !important;background-color: #5cb85c !important;color: white !important;clear: none !important;">VNBees Modal</h4> </div> <div class="modal-body"> <p>Hi, this is modal can custom for your lead marketing</p> <!-- <p>Some other text...</p> --> </div> <!-- <div class="modal-footer"> <h3>Modal Footer</h3> </div> --> </div>'; // nõi dung modal
         $response->status = true; // modal có show hay không
         $response->type = 1; // 1: scroll theo body, 2: hover tắt
