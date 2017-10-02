@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class reportController extends BaseController
 {
 	public function getIndex(){
-        return Tracking::all()->groupBy(DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d')"))->toJson();
+        return Tracking::all()->toJson();
 
 	}
 }
