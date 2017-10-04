@@ -15,7 +15,7 @@ class reportController extends BaseController
 	public function getIndex(){
         $respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `id` DESC');
         foreach ($respose as $key => $value) {
-        	$respose[$key]->userCount = Tracking::where('url',$value->url)->groupBy('userId')->count();
+        	$respose[$key]->userCount = count(Tracking::where('url',$value->url)->groupBy('userId')->get());
         }
         return json_encode($respose);
         // return Tracking::all()->sortByDesc('created_at')->groupBy(function($date) {
@@ -24,10 +24,11 @@ class reportController extends BaseController
 	}
 
 	public function getTest(){
+		$test = [];
 		$respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `id` DESC');
 		foreach ($respose as $key => $value) {
-			$respose[$key]->userCount = Tracking::where('url',$value->url)->groupBy('userId')->count();
+			$respose[$key]->userCount = Tracking::groupBy('userId')->where('url',$value->url)->count();
 		}
-		return json_encode($respose);
+		return json_encode($test);
 	}
 }
