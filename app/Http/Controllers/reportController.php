@@ -16,6 +16,7 @@ class reportController extends BaseController
         $respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `traffic` DESC');
         foreach ($respose as $key => $value) {
         	$respose[$key]->userCount = count(Tracking::where('url',$value->url)->groupBy('userId')->get());
+        	$respose[$key]->lastActive = \Carbon\Carbon::parse(Tracking::where('url',$value->url)->orderBy('id','DESC')->first()->created_at)->format('h:i:s d-m-Y');
         }
         return json_encode($respose);
         // return Tracking::all()->sortByDesc('created_at')->groupBy(function($date) {
