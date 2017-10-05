@@ -1,4 +1,5 @@
 window.onload = function(){
+    var socket = io.connect('http://dashboard.vnbees.com:3000');
     var flag = 1;
 
     // GET SCROLL EVENT
