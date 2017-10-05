@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class reportController extends BaseController
 {
 	public function getIndex(){
-        $respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `id` DESC');
+        $respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `traffic` DESC');
         foreach ($respose as $key => $value) {
         	$respose[$key]->userCount = count(Tracking::where('url',$value->url)->groupBy('userId')->get());
         }
@@ -25,10 +25,10 @@ class reportController extends BaseController
 
 	public function getTest(){
 		$test = [];
-		$respose = DB::select('SELECT COUNT(url) AS traffic,url,userId,created_at,updated_at,id FROM tracking GROUP BY url  ORDER BY `id` DESC');
-		foreach ($respose as $key => $value) {
-			$respose[$key]->userCount = Tracking::groupBy('userId')->where('url',$value->url)->count();
-		}
-		return json_encode($test);
+		$respose = DB::select('SELECT *, DATE_FORMAT(created_at, "%Y-%m-%d") as created_at_format FROM tracking GROUP BY url');
+		// foreach ($respose as $key => $value) {
+		// 	$respose[$key]->userCount = Tracking::groupBy('userId')->where('url',$value->url)->count();
+		// }
+		return $respose;
 	}
 }
