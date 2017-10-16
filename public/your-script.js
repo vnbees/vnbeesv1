@@ -1,5 +1,4 @@
 window.onload = function(){
-    var socket = io.connect('http://dashboard.vnbees.com');
     var flag = 1;
 
     // GET SCROLL EVENT
@@ -70,6 +69,9 @@ window.onload = function(){
     token = localStorage.getItem("token");
   }
   console.log(token);
+
+  var socket = io.connect('http://dashboard.vnbees.com');
+  socket.emit('userToken', token);
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
