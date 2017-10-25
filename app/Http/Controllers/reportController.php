@@ -17,13 +17,13 @@ class reportController extends BaseController
 		$url = $this->getUrlById($request->input('id'));
 		if($url != null){
 			$respose = DB::select("
-				SELECT *, SUBSTRING_INDEX(url, '/', 3) as domain, count(url) as traffic FROM tracking WHERE SUBSTRING_INDEX(url, '/', 3) = '".$url."' GROUP BY url ORDER BY id DESC
+				SELECT updated_at,url,max(id) as id,SUBSTRING_INDEX(url, '/', 3) as domain, count(url) as traffic FROM `tracking` WHERE SUBSTRING_INDEX(url, '/', 3) = '".$url."' GROUP BY url ORDER BY id DESC
 			");
 			// (SELECT *, SUBSTRING_INDEX(url, '/', 3) AS domain FROM tracking WHERE SUBSTRING_INDEX(url, '/', 3) = 'http://blog.vnbees.com' GROUP BY url ORDER BY id DESC)
 			// echo json_encode( $respose );die;
 			foreach ($respose as $key => $value) {
 				$respose[$key]->userCount = count(Tracking::where('url',$value->url)->groupBy('userId')->get());
-				$respose[$key]->lastActive = \Carbon\Carbon::parse(Tracking::where('url',$value->url)->orderBy('id','DESC')->first()->created_at)->format('h:i:s d-m-Y');
+				$respose[$key]->lastActive = \Carbon\Carbon::parse($respose[$key]->updated_at)->format('H:i:s d-m-Y');
 			}
 			return json_encode($respose);
 		}else{
