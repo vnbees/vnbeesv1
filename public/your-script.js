@@ -80,7 +80,7 @@ window.onload = function(){
       console.log(this.responseText)
     }
   };
-  xhttp.open("GET", "http://api.vnbees.com/tracking?url="+locationHref+"&token="+token, true);
+  xhttp.open("GET", "http://api.vnbees.com/tracking?source="+document.referrer+"&url="+locationHref+"&token="+token, true);
   xhttp.send();
 }
 

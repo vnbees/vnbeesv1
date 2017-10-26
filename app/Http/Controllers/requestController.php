@@ -35,6 +35,7 @@ class requestController extends BaseController
     public function getTracking(Request $request){
     	$tracking = new Tracking;
         $tracking->url = $request->input('url');
+        $tracking->source = $request->input('source');
         $tracking->userId = $request->input('token');
         $tracking->save();
 
