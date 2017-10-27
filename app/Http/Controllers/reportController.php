@@ -25,9 +25,7 @@ class reportController extends BaseController
 			// (SELECT *, SUBSTRING_INDEX(url, '/', 3) AS domain FROM tracking WHERE SUBSTRING_INDEX(url, '/', 3) = 'http://blog.vnbees.com' GROUP BY url ORDER BY id DESC)
 			// echo json_encode( $respose );die;
 			foreach ($respose as $key => $value) {
-				$respose[$key]->userCount = count(
-					Tracking::where('url',$value->url)->groupBy('userId')->get()
-				);
+				$respose[$key]->userCount = count(DB::select("SELECT id,updated_at,url FROM tracking WHERE (DATE(`updated_at`) = CURDATE()) AND (url = '".$value->url."') GROUP BY userId"));
 				// DB::select("
 						// SELECT id,updated_at,url FROM tracking WHERE
 							// (DATE(`updated_at`) = CURDATE()) AND
