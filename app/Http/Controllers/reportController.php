@@ -26,13 +26,14 @@ class reportController extends BaseController
 			// echo json_encode( $respose );die;
 			foreach ($respose as $key => $value) {
 				$respose[$key]->userCount = count(
-					DB::select("
-						SELECT id,updated_at,url FROM tracking WHERE
-							(DATE(`updated_at`) = CURDATE()) AND
-							(url = ".$value->url.")
-						GROUP BY userId
-					")
+					Tracking::where('url',$value->url)->groupBy('userId')->get()
 				);
+				// DB::select("
+						// SELECT id,updated_at,url FROM tracking WHERE
+							// (DATE(`updated_at`) = CURDATE()) AND
+							// (url = ".$value->url.")
+						// GROUP BY userId
+					// ")
 				// Tracking::where('url',$value->url)->groupBy('userId')->get()
 			}
 			return json_encode($respose);
