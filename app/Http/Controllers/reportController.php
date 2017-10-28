@@ -54,7 +54,7 @@ class reportController extends BaseController
 		}
 		$pTag = '';
 		foreach ($response as $key => $value) {
-			$pTag .= '<p>- <a href="#" class="text-green">'.$value->userId.'</a> đã truy cập <span class="label bg-yellow">'.$value->visit.'</span> lần</p>';
+			$pTag .= '<p>- <a href="#" class="label bg-blue">'.$value->userId.'</a> đã truy cập <span class="label bg-yellow">'.$value->visit.'</span> lần</p>';
 		}
 		$htmlRes = '<div class="modal modal-info" id="modal-user-visit">
 					  <div class="modal-dialog">
