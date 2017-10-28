@@ -45,6 +45,38 @@ class reportController extends BaseController
 	}
 
 
+	public function getUsersByUrl(Request $request){
+		$url = $request->input('url');
+		$response = DB::select("SELECT userId FROM tracking WHERE url = '".$url."' GROUP BY userId");
+		foreach ($response as $k => $v) {
+			$userId = $v->userId;
+			$response[$k]->visit = count( DB::select("SELECT id FROM tracking WHERE url = '".$url."' AND userId = '".$userId."'"));
+		}
+		$pTag = '';
+		foreach ($response as $key => $value) {
+			$pTag .= '<p>- <a href="#" class="text-green">'.$value->userId.'</a> đã truy cập <span class="label bg-yellow">'.$value->visit.'</span> lần</p>';
+		}
+		$htmlRes = '<div class="modal modal-info" id="modal-user-visit">
+					  <div class="modal-dialog">
+					    <div class="modal-content">
+					      <div class="modal-header">
+					        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					        <h4 class="modal-title">Users đã truy cập '.$url.'</h4>
+					      </div>
+					      <div class="modal-body">
+					      '.$pTag.'
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+					      </div>
+					    </div><!-- /.modal-content -->
+					  </div><!-- /.modal-dialog -->
+					</div><!-- /.modal -->';
+
+		return $htmlRes;
+	}
+
+
 	public function getUrlById($id){
 		$user = Users::find($id);
 		if( $user != null){
