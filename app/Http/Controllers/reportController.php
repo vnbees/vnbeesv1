@@ -15,17 +15,18 @@ class reportController extends BaseController
 {
 	public function getIndex(Request $request){
 		$url = $this->getUrlById($request->input('id'));
+		$dateFrom = $request->input('dateFrom');
+		$dateTo = $request->input('dateTo');
 		if($url != null){
 			$respose = DB::select("
 				SELECT max(id) as id,SUBSTRING_INDEX(url, '/', 3) as domain, count(url) as traffic, updated_at,url FROM `tracking` WHERE 
 						(SUBSTRING_INDEX(url, '/', 3) = '".$url."') AND
-						(DATE(`updated_at`) = CURDATE())
+						(DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."')
 					GROUP BY url ORDER BY id DESC
 			");
-			// (SELECT *, SUBSTRING_INDEX(url, '/', 3) AS domain FROM tracking WHERE SUBSTRING_INDEX(url, '/', 3) = 'http://blog.vnbees.com' GROUP BY url ORDER BY id DESC)
-			// echo json_encode( $respose );die;
+			// BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() 10/28/2017 
 			foreach ($respose as $key => $value) {
-				$respose[$key]->userCount = count(DB::select("SELECT id,updated_at,url FROM tracking WHERE (DATE(`updated_at`) = CURDATE()) AND (url = '".$value->url."') GROUP BY userId"));
+				$respose[$key]->userCount = count(DB::select("SELECT id,updated_at,url FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND (url = '".$value->url."') GROUP BY userId"));
 				// DB::select("
 						// SELECT id,updated_at,url FROM tracking WHERE
 							// (DATE(`updated_at`) = CURDATE()) AND
