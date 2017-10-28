@@ -46,11 +46,13 @@ class reportController extends BaseController
 
 
 	public function getUsersByUrl(Request $request){
+		$dateFrom = $request->input('dateFrom');
+		$dateTo = $request->input('dateTo');
 		$url = $request->input('url');
-		$response = DB::select("SELECT userId FROM tracking WHERE url = '".$url."' GROUP BY userId");
+		$response = DB::select("SELECT userId FROM tracking WHERE (url = '".$url."') AND DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') GROUP BY userId");
 		foreach ($response as $k => $v) {
 			$userId = $v->userId;
-			$response[$k]->visit = count( DB::select("SELECT id FROM tracking WHERE url = '".$url."' AND userId = '".$userId."'"));
+			$response[$k]->visit = count( DB::select("SELECT id FROM tracking WHERE (url = '".$url."') AND userId = ('".$userId."') DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."')"));
 		}
 		$pTag = '';
 		foreach ($response as $key => $value) {
