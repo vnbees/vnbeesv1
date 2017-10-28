@@ -49,10 +49,10 @@ class reportController extends BaseController
 		$dateFrom = $request->input('dateFrom');
 		$dateTo = $request->input('dateTo');
 		$url = $request->input('url');
-		$response = DB::select("SELECT userId FROM tracking WHERE url = '".$url."' GROUP BY userId");
+		$response = DB::select("SELECT userId FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND url = '".$url."' GROUP BY userId");
 		foreach ($response as $k => $v) {
 			$userId = $v->userId;
-			$response[$k]->visit = count( DB::select("SELECT id FROM tracking WHERE url = '".$url."' AND userId = '".$userId."'"));
+			$response[$k]->visit = count( DB::select("SELECT id FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND url = '".$url."' AND userId = '".$userId."'"));
 		}
 		$pTag = '';
 		foreach ($response as $key => $value) {
