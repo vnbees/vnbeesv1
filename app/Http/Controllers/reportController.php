@@ -27,7 +27,7 @@ class reportController extends BaseController
 			// BETWEEN CURDATE() - INTERVAL 30 DAY AND CURDATE() 10/28/2017 
 			foreach ($respose as $key => $value) {
 				$respose[$key]->userCount = count(DB::select("SELECT id,updated_at,url FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND (url = '".$value->url."') GROUP BY userId"));
-				$respose[$key]->source = json_encode( DB::select("SELECT source FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND (url = '".$value->url."') GROUP BY source") );
+				$respose[$key]->source =  DB::select("SELECT source FROM tracking WHERE (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND (url = '".$value->url."') GROUP BY source") ;
 				// DB::select("
 						// SELECT id,updated_at,url FROM tracking WHERE
 							// (DATE(`updated_at`) = CURDATE()) AND
