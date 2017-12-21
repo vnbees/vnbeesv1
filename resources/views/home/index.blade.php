@@ -36,9 +36,8 @@
       <!-- Default box -->
       <div class="box color-palette-box">
         <div class="box-header with-border">
-          <h3 class="box-title" style="margin-right: 20px;">Chart</h3>
-          <button id="daterange-btn" class="btn btn-default">
-            <i class="fa fa-calendar"></i> Filter
+          <h3 class="box-title">Chart</h3>
+          <button id="daterange-btn" class="btn btn-link">
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="box-tools pull-right">
@@ -66,7 +65,7 @@
             <div class="col-sm-4 col-md-2">
               <h4 class="text-center">Organic Search</h4>
               <div class="color-palette-set">
-                <div class="bg-green-active color-palette"><span>Active</span></div>
+                <div style="background-color: #dd4b39 !important;" class="bg-green-active color-palette"><span>Active</span></div>
               </div>
             </div><!-- /.col -->
           </div><!-- /.row -->
