@@ -13,6 +13,50 @@ use App\Users;
 
 class reportController extends BaseController
 {
+	public function createDateRangeArray($strDateFrom,$strDateTo){
+	    // takes two dates formatted as YYYY-MM-DD and creates an
+	    // inclusive array of the dates between the from and to dates.
+
+	    // could test validity of dates here but I'm already doing
+	    // that in the main script
+
+	    $aryRange=array();
+
+	    $iDateFrom=mktime(1,0,0,substr($strDateFrom,5,2),     substr($strDateFrom,8,2),substr($strDateFrom,0,4));
+	    $iDateTo=mktime(1,0,0,substr($strDateTo,5,2),     substr($strDateTo,8,2),substr($strDateTo,0,4));
+
+	    if ($iDateTo>=$iDateFrom)
+	    {
+	        array_push($aryRange,date('Y-m-d',$iDateFrom)); // first entry
+	        while ($iDateFrom<$iDateTo)
+	        {
+	            $iDateFrom+=86400; // add 24 hours
+	            array_push($aryRange,date('Y-m-d',$iDateFrom));
+	        }
+	    }
+	    return $aryRange; //print_r(createDateRangeArray('2017-12-20','2018-01-20'));
+	}
+
+	public function chartReport($url,$dateFrom,$dateTo){
+
+		// CẦN REPORT MẤY NGUỒN
+		// - DIRECT LÀ NULL
+		// - UTM THEO URL ?UTM_SOURCE
+		// - SEARCH LÀ THEO URL ?Q
+
+		$query = "SELECT
+					id,
+					SUBSTRING_INDEX(url, '/', 3) as domain, 
+					updated_at,
+					source,
+					url FROM `tracking` WHERE 
+						(SUBSTRING_INDEX(url, '/', 3) = '".$url."') AND
+						(source LIKE '%?q%') AND
+						(DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."')
+				";
+		return DB::select($query);
+	}
+
 	public function getIndex(Request $request){
 		$url = $this->getUrlById($request->input('id'));
 		$dateFrom = $request->input('dateFrom');
@@ -36,7 +80,10 @@ class reportController extends BaseController
 					// ")
 				// Tracking::where('url',$value->url)->groupBy('userId')->get()
 			}
-			return json_encode($respose);
+			// $this->chartSource($respose);
+			// return json_encode( $respose );
+			return json_encode( $this->chartReport($url,$dateFrom,$dateTo) );
+			// return json_encode($this->DirectSource($respose,$dateFrom,$dateTo));
 		}else{
 			return json_encode([]);
 		}
@@ -45,6 +92,62 @@ class reportController extends BaseController
         //     })->toJson();
 	}
 
+	public function chartSource($data){
+		// 
+	}
+
+	public function filter($data){
+
+		$sum = 0;
+		$utm_source = [];
+		foreach($data as $k => $item){
+			$data[$k]->percent = null;
+			$data[$k]->utm_source = null;
+			$result = $this->detectUTM($item->url);
+			if(isset( $result['utm_source'] )){
+				$data[$k]->utm_source = $result['utm_source'];
+			}
+			$sum = $sum + $item->traffic;
+		}
+
+		foreach($data as $k => $item){
+			// (số đó x 100) / tổng
+			if(!empty($item->utm_source)){
+				$data[$k]->percent = round( ($item->traffic * 100) / $sum ,2);
+			}
+		}
+		// return array_filter($utm_source);
+		return $data;
+	}
+
+
+	public function DirectSource($data,$dateFrom,$dateTo){
+		
+		$traffic = 0;
+		foreach ($data as $key => $value) {
+
+			foreach ($value->source as $k => $v) {
+			 	if($v->source == null){
+			 		$traffic += DB::select("SELECT count(url) as traffic FROM `tracking` WHERE url = '".$value->url."' AND (DATE_FORMAT(`updated_at`,'%m/%d/%Y') BETWEEN '".$dateFrom."' AND '".$dateTo."') AND (source IS NULL)")[0]->traffic;
+			 	} // direct
+			 	break;
+			 } 
+		}
+		return $traffic;
+	}
+
+	public function SearchSource(){
+		// 
+	}
+
+	public function detectUTM($url){
+
+		// http://lamme.blog/be-hoc-toan-cung-finger-math?utm_source=adwords
+		$query_str = parse_url($url, PHP_URL_QUERY);
+		parse_str($query_str, $query_params);
+		// print_r($query_params);
+		return $query_params;
+	}
 
 	public function getUsersByUrl(Request $request){
 		$dateFrom = $request->input('dateFrom');
