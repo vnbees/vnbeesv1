@@ -73,6 +73,23 @@ class IndexController extends Controller
     public function charReport($allDayBet,$url){
 
         $char = [];
+        $report = [
+            'UTM' => 0,
+            'DIRECT' => 0,
+            'ORGANIC_SEARCH' => 0
+        ];
+        $item1Total = 0;
+        $item2Total = 0;
+        $item3Total = 0;
+        $queryTotal = "SELECT
+                        id,
+                        SUBSTRING_INDEX(url, '/', 3) as domain, 
+                        updated_at,
+                        source,
+                        url FROM `tracking` WHERE 
+                            (SUBSTRING_INDEX(url, '/', 3) = '".$url."')";
+        $allTraffic = count(DB::select($queryTotal));
+
         foreach ($allDayBet as $date) {
             // UTM_SOURCE
             $query = "SELECT
@@ -86,6 +103,19 @@ class IndexController extends Controller
                         (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."')
                     ";
             $item1 = count(DB::select($query));
+            $item1Total += count(DB::select($query));
+            $queryUser = "SELECT
+                        id,
+                        SUBSTRING_INDEX(url, '/', 3) as domain, 
+                        updated_at,
+                        userId,
+                        source,
+                        url FROM `tracking` WHERE 
+                            (SUBSTRING_INDEX(url, '/', 3) = '".$url."') AND
+                            (url LIKE '%?utm_source%') AND
+                        (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."') GROUP BY userId
+                    ";
+            $report['UTM'] +=  count(DB::select($queryUser));
 
             // DIRECT NULL NOT LIKE '%test%'
             $query = "SELECT
@@ -100,6 +130,20 @@ class IndexController extends Controller
                         (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."')
                     ";
             $item2 = count(DB::select($query));
+            $item2Total += count(DB::select($query));
+            $queryUser = "SELECT
+                        id,
+                        SUBSTRING_INDEX(url, '/', 3) as domain, 
+                        updated_at,
+                        userId,
+                        source,
+                        url FROM `tracking` WHERE 
+                            (SUBSTRING_INDEX(url, '/', 3) = '".$url."') AND
+                            (source IS NULL) AND
+                            (url NOT LIKE '%?utm_source%') AND
+                        (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."') GROUP BY userId
+                    ";
+            $report['DIRECT'] +=  count(DB::select($queryUser));
 
             // ORGANIC_SEARCH
             $query = "SELECT
@@ -114,10 +158,40 @@ class IndexController extends Controller
                         (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."')
                     ";
             $item3 = count(DB::select($query));
+            $item3Total += count(DB::select($query));
+            $queryUser = "SELECT
+                        id,
+                        SUBSTRING_INDEX(url, '/', 3) as domain, 
+                        updated_at,
+                        userId,
+                        source,
+                        url FROM `tracking` WHERE 
+                            (SUBSTRING_INDEX(url, '/', 3) = '".$url."') AND
+                            (source LIKE '%?q%') AND
+                            (url NOT LIKE '%?utm_source%') AND
+                        (DATE_FORMAT(`updated_at`,'%Y-%m-%d') BETWEEN '".$date."' AND '".$date."') GROUP BY userId
+                    ";
+            $report['ORGANIC_SEARCH'] +=  count(DB::select($queryUser));
             $char[] = (object) ['d' => $date, 'item1' => $item1, 'item2' => $item2, 'item3' => $item3];
             // {d: '2017-12-01', item1: 2666, item2: 2666}
         }
-        return $char;
+        return (object) ['chart' => $char,'reportHTML' => $this->renderTableReport(['UTM' => $item1Total, 'DIRECT' => $item2Total, 'ORGANIC_SEARCH' => $item3Total],$allTraffic)];
+    }
+
+    /**
+    * Tiêu đề function.
+    *
+    * @return Mô tả tính năng
+    */
+
+    public function renderTableReport($report,$allTraffic){
+
+        return $html = '<table class="table table-striped"> <tr> <th style="width: 10px">#</th> <th>Source</th> <th>Users</th> <th>Traffic Percent</th> <th style="width: 40px"></th> </tr> <tr> <td>1.</td> <td>Organic Search</td> <td>'.$report['ORGANIC_SEARCH'].'</td> <td> <div class="progress progress-xs"> <div class="progress-bar progress-bar-danger" style="width: '.$this->canPercent($report['ORGANIC_SEARCH'],$allTraffic).'%"></div> </div> </td> <td><span class="badge bg-red">'.$this->canPercent($report['ORGANIC_SEARCH'],$allTraffic).'%</span></td> </tr> <tr> <td>2.</td> <td>UTM</td> <td>'.$report['UTM'].'</td> <td> <div class="progress progress-xs"> <div class="progress-bar progress-bar-yellow" style="width: '.$this->canPercent($report['UTM'],$allTraffic).'%"></div> </div> </td> <td><span class="badge bg-yellow">'.$this->canPercent($report['UTM'],$allTraffic).'%</span></td> </tr> <tr> <td>3.</td> <td>Direct</td> <td>'.$report['DIRECT'].'</td> <td> <div class="progress progress-xs progress-striped active"> <div class="progress-bar progress-bar-primary" style="width: '.$this->canPercent($report['DIRECT'],$allTraffic).'%"></div> </div> </td> <td><span class="badge bg-light-blue">'.$this->canPercent($report['DIRECT'],$allTraffic).'%</span></td> </tr> </table>';
+    }
+
+    public function canPercent($number,$total){
+        return round( ($number * 100) / $total ,2 );
+        // (số đó x 100) / tổng
     }
 
      /**

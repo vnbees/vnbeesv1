@@ -37,9 +37,7 @@
       <div class="box color-palette-box">
         <div class="box-header with-border">
           <h3 class="box-title">Chart</h3>
-          <button id="daterange-btn" class="btn btn-link">
-            <i class="fa fa-caret-down"></i>
-          </button>
+          <a style="color: darkgray;" href="#" id="daterange-btn"><i class="fa fa-calendar-check-o"></i></a>
           <div class="box-tools pull-right">
             <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
             <button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
@@ -53,23 +51,84 @@
             <div class="col-sm-4 col-md-2">
               <h4 class="text-center">UTM</h4>
               <div class="color-palette-set">
-                <div class="bg-yellow color-palette"><span>Active</span></div>
+                <div class="bg-yellow color-palette">
+                  <!-- <span>Active</span> -->
+                </div>
               </div>
             </div><!-- /.col -->
             <div class="col-sm-4 col-md-2">
               <h4 class="text-center">Direct</h4>
               <div class="color-palette-set">
-                <div class="bg-aqua-active color-palette"><span>Active</span></div>
+                <div class="bg-aqua-active color-palette">
+                  <!-- <span>Active</span> -->
+                </div>
               </div>
             </div><!-- /.col -->
             <div class="col-sm-4 col-md-2">
               <h4 class="text-center">Organic Search</h4>
               <div class="color-palette-set">
-                <div style="background-color: #dd4b39 !important;" class="bg-green-active color-palette"><span>Active</span></div>
+                <div style="background-color: #dd4b39 !important;" class="bg-green-active color-palette">
+                  <!-- <span>Active</span> -->
+                </div>
               </div>
             </div><!-- /.col -->
           </div><!-- /.row -->
         </div><!-- /.box-footer-->
+      </div><!-- /.box -->
+
+      <!-- Default box -->
+      <div id="reportTable" class="box color-palette-box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Report</h3>
+          <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+            <button class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <div class="box-body">
+          <table class="table table-striped">
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Source</th>
+              <th>Users</th>
+              <th>Traffic Percent</th>
+              <th style="width: 40px"></th>
+            </tr>
+            <tr>
+              <td>1.</td>
+              <td>Organic Search</td>
+              <td>1</td>
+              <td>
+                <div class="progress progress-xs">
+                  <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
+                </div>
+              </td>
+              <td><span class="badge bg-red">55%</span></td>
+            </tr>
+            <tr>
+              <td>2.</td>
+              <td>UTM</td>
+              <td>2</td>
+              <td>
+                <div class="progress progress-xs">
+                  <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                </div>
+              </td>
+              <td><span class="badge bg-yellow">70%</span></td>
+            </tr>
+            <tr>
+              <td>3.</td>
+              <td>Direct</td>
+              <td>3</td>
+              <td>
+                <div class="progress progress-xs progress-striped active">
+                  <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                </div>
+              </td>
+              <td><span class="badge bg-light-blue">30%</span></td>
+            </tr>
+          </table>
+        </div><!-- /.box-body -->
       </div><!-- /.box -->
 
     </section><!-- /.content -->
@@ -80,17 +139,20 @@
   <script type="text/javascript">
     function renderChar(url = 'store?id='+user.id+'&dateFrom='+moment().format("MM/DD/YYYY")+'&dateTo='+moment().format("MM/DD/YYYY")) {
         $.get(url, function(data, status){
+             console.log(data);
              // AREA CHART
              var area = new Morris.Area({
                element: 'revenue-chart',
                resize: true,
-               data: JSON.parse(data),
+               data: JSON.parse(data).chart,
                xkey: 'd',
                ykeys: ['item1', 'item2', 'item3'],
                labels: ['UTM', 'Direct' , 'Organic Search'],
                lineColors: ['#f39c12', '#00a7d0', '#dd4b39'],
                hideHover: 'auto'
              });
+
+             $('#reportTable .box-body').html(JSON.parse(data).reportHTML);
           });
     }
     $(function () {
