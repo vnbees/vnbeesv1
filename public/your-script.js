@@ -63,7 +63,7 @@ window.onload = function(){
   var xhttp = new XMLHttpRequest();
   var locationHref = window.location.href;
   if (getCookie('VNBtoken') == ''){
-    token = randomString(12);
+    token = randomString(250);
     setCookie('VNBtoken',token,36500);
   }else{
     token = getCookie('VNBtoken');
@@ -74,7 +74,7 @@ window.onload = function(){
   // }else{
   //   token = localStorage.getItem("token");
   // }
-  console.log(token);return false;
+  console.log(token);
 
   // var socket = io.connect('http://dashboard.vnbees.com');
   // socket.emit('userToken', token);
