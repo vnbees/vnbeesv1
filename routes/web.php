@@ -17,6 +17,7 @@
 // AdvancedRoute::controller('/', ['middleware' => 'auth', 'uses' => 'IndexController']);
 
 AdvancedRoute::controller('/', 'IndexController');
+AdvancedRoute::controller('/request', 'RequestController');
 AdvancedRoute::controller('/report', 'reportController');
 
 // Route::get('profile', ['middleware' => 'auth.basic', function()
