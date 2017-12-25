@@ -62,16 +62,22 @@ window.onload = function(){
   // code tracking sent to api
   var xhttp = new XMLHttpRequest();
   var locationHref = window.location.href;
-  if (localStorage.getItem("token") === null) {
+  if (getCookie('VNBtoken') == ''){
     token = randomString(12);
-    localStorage.setItem("token", token);
+    setCookie('VNBtoken',token,36500);
   }else{
-    token = localStorage.getItem("token");
+    token = getCookie('VNBtoken');
   }
-  console.log(token);
+  // if (localStorage.getItem("token") === null) {
+  //   token = randomString(12);
+  //   localStorage.setItem("token", token);
+  // }else{
+  //   token = localStorage.getItem("token");
+  // }
+  console.log(token);return false;
 
-  var socket = io.connect('http://dashboard.vnbees.com');
-  socket.emit('userToken', token);
+  // var socket = io.connect('http://dashboard.vnbees.com');
+  // socket.emit('userToken', token);
 
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -94,6 +100,47 @@ var randomString = function(length) {
     return text;
 }
 
+// setAndGetCookie
+// ***************
+// DEV 12/25/2017 By Jack
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function checkCookie() {
+    var user = getCookie("username");
+    if (user != "") {
+        alert("Welcome again " + user);
+    } else {
+        user = prompt("Please enter your name:", "");
+        if (user != "" && user != null) {
+            setCookie("username", user, 365);
+        }
+    }
+}
+
+function deleteCookie(cname) {
+  document.cookie = cname+"=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
 // window.addEventListener("beforeunload", function (e) {
 //     var confirmationMessage = 'It looks like you have been editing something. '
 //                             + 'If you leave before saving, your changes will be lost.';
